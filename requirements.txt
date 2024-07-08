@@ -4,3 +4,4 @@ tensorflow       # TensorFlow for model loading and predictions
 matplotlib       # Matplotlib for plotting Grad-CAM
 Pillow           # Pillow for image processing
 scikit-learn     # Scikit-learn for evaluation metrics and cross-validation
+streamlit-image-comparison
