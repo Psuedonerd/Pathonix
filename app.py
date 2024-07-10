@@ -73,15 +73,15 @@ def ensemble_predictions(models, input_data):
 
 # Streamlit UI
 st.set_page_config(
-    page_title="PathoNix 🩺🔬",
+    page_title="Pathonix 🩺🔬",
     page_icon="🧬",
     layout="centered",
     initial_sidebar_state="expanded",
 )
 
-st.title("PathoNix: Deep Learning for Enhanced Pathology Diagnostics 🩺🔬")
+st.title("Pathonix: Deep Learning for Enhanced Pathology Diagnostics 🩺🔬")
 st.write("""
-    Welcome to PathoNix, an advanced tool for classifying histopathological images 
+    Welcome to Pathonix, an advanced tool for classifying histopathological images 
     using state-of-the-art deep learning models. With our platform, you can:
     
     - **Upload histopathological images** to classify them as cancerous or non-cancerous.
