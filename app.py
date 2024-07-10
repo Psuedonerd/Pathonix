@@ -175,7 +175,7 @@ st.sidebar.image("./Images/living-tissue.png", use_column_width=True)
 st.sidebar.title("About PathoNix 🩺🔬")
 st.sidebar.info(
     """
-    **PathoNix** is an advanced tool for classifying histopathological images using state-of-the-art deep learning models.
+    **Pathonix** is an advanced tool for classifying histopathological images using state-of-the-art deep learning models.
     
     **Features:**
     - Utilizes EfficientNetB0, MobileNetV2, and ResNet50 models.
