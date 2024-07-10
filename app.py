@@ -183,12 +183,11 @@ st.sidebar.info(
     - Uses ensemble predictions for improved accuracy.
 
     **Developed by:**
-    - Your Name
-    - Team Members (if any)
-    - Organization/Institution (if applicable)
+    - Vishnu Mukku
+    - Rising Sophomore at Avon High School
 
     **Contact:**
-    - Email: your-email@example.com
+    - Email: vishnu.mukku.2020@gmail.com
     - LinkedIn: [Your LinkedIn](https://www.linkedin.com/in/your-profile/)
     - GitHub: [Your GitHub](https://github.com/your-profile/)
     
