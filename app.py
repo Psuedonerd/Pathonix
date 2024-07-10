@@ -188,8 +188,8 @@ st.sidebar.info(
 
     **Contact:**
     - Email: vishnu.mukku.2020@gmail.com
-    - LinkedIn: [Your LinkedIn](https://www.linkedin.com/in/your-profile/)
-    - GitHub: [Your GitHub](https://github.com/your-profile/)
+    - LinkedIn: [Vishnu's LinkedIn](https://www.linkedin.com/in/vishnumukku/)
+    - GitHub: [Vishnu's GitHub](https://github.com/Psuedonerd/)
     
     **License:**
     This project is licensed under the MIT License.
