@@ -198,7 +198,7 @@ st.sidebar.info(
     - Uses ensemble predictions for improved accuracy.
 
     **Developed by:**
-    - Vishnu Mukku mentored by Dr. Ramachandran Kasu
+    - Vishnu Mukku
 
     **Contact:**
     - Email: vishnu.mukku.2020@gmail.com
