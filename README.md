@@ -1,6 +1,6 @@
-# PathoNix 🩺🔬
+# Pathonix 🩺🔬
 
-**PathoNix** is an advanced tool for classifying histopathological images using state-of-the-art deep learning models. With PathoNix, you can upload histopathological images to classify them as cancerous or non-cancerous, and visualize Grad-CAM heatmaps to understand the model's decision-making process.
+**Pathonix** is an advanced tool for classifying histopathological images using state-of-the-art deep learning models. With Pathonix, you can upload histopathological images to classify them as cancerous or non-cancerous, and visualize Grad-CAM heatmaps to understand the model's decision-making process.
 
 ## Features
 
@@ -98,14 +98,12 @@ gatherUsageStats = false
 ## Contact
 
 **Developed by:**
-- Your Name
-- Team Members (if any)
-- Organization/Institution (if applicable)
+- Vishnu Mukku
+- Avon High School, Avon, Connecticut
 
 **Contact:**
-- Email: your-email@example.com
-- LinkedIn: [Your LinkedIn](https://www.linkedin.com/in/your-profile/)
-- GitHub: [Your GitHub](https://github.com/your-profile/)
+- Email: vishnu.mukku.2020@gmail.com
+- LinkedIn: https://www.linkedin.com/in/vishnumukku/
 
 ## License
 
@@ -117,8 +115,6 @@ This project is licensed under the MIT License.
 ## References:
 
 1. [Grad CAM in Deep Learning](https://www.analyticsvidhya.com/blog/2023/12/grad-cam-in-deep-learning/)
-
-The journey of Image Classification from Pixels to Perfection has been such revolutionary, transforming the impossible into reality. 📸
 
 Here's how a few notable groundbreaking models have evolved over time, each bringing us closer to perfection:
 
