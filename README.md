@@ -44,9 +44,9 @@ pip install -r requirements.txt
 ├── .gitignore
 ├── Ovarian_Cancer_Detection_Preprocessing_and_Augmentation.ipynb
 ├── packages.txt
-├── Readme.md
+├── README.md
 ├── requirements.txt
-├── StreamlitApp.py
+├── app.py
 └── config.toml
 ```
 
@@ -55,7 +55,7 @@ pip install -r requirements.txt
 1. **Start the Streamlit app:**
 
 ```bash
-streamlit run StreamlitApp.py
+streamlit run app.py
 ```
 
 2. **Open your web browser and navigate to:**
