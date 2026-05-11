@@ -112,22 +112,3 @@ This project is licensed under the MIT License.
 
 
 
-## References:
-
-1. [Grad CAM in Deep Learning](https://www.analyticsvidhya.com/blog/2023/12/grad-cam-in-deep-learning/)
-
-Here's how a few notable groundbreaking models have evolved over time, each bringing us closer to perfection:
-
-2. 2015: ResNet
-
-- Developed by Kaiming He, Xiangyu Zhang, [**Shaoqing Ren**](https://www.linkedin.com/feed/update/urn:li:activity:7213904086025351169/#), and Jian Sun, ResNet introduced residual connections to address the vanishing gradient problem. 🔄
-
-🔹Advancement: Enabled training of extremely deep networks (up to 152 layers), achieving a top-5 error rate of 3.6%. 🌟
-
-3. 2019: EfficientNet
-
-- Created by [**Mingxing Tan**](https://www.linkedin.com/feed/update/urn:li:activity:7213904086025351169/#) and [**Quoc V. Le**](https://www.linkedin.com/feed/update/urn:li:activity:7213904086025351169/#), EfficientNet used a new scaling method that uniformly scales all dimensions. 📈
-
-🔹Advancement: Achieved state-of-the-art accuracy with fewer parameters and FLOPs, showing that careful scaling can improve performance. 🏅
-
-
