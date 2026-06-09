@@ -20,8 +20,9 @@
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/Psuedonerd/pathonix.git
-cd pathonix
+git lfs install
+git clone https://github.com/Psuedonerd/Pathonix.git
+cd Pathonix
 git lfs pull
 ```
 
