@@ -19,7 +19,7 @@
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/pathonix.git
+git clone https://github.com/Psuedonerd/pathonix.git
 cd pathonix
 ```
 
