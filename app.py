@@ -3,25 +3,65 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import os
-import shutil
+import tempfile
 import matplotlib.pyplot as plt
 from streamlit_image_comparison import image_comparison
 
-# Load models
-models_dir = "modelsv3"
-efficientnetb0_model = tf.keras.models.load_model(
-    os.path.join(models_dir, "efficientnetb0_model.h5")
-)
-mobilenetv2_model = tf.keras.models.load_model(
-    os.path.join(models_dir, "mobilenetv2_model.h5")
-)
-resnet50_model = tf.keras.models.load_model(
-    os.path.join(models_dir, "resnet50_model.h5")
-)
+MODELS_DIR = "modelsv3"
+RUNTIME_DIR = "runtime_files"
+SAMPLE_IMAGES_DIR = "sample_images"
+MODEL_FILES = {
+    "EfficientNetB0": "efficientnetb0_model.h5",
+    "MobileNetV2": "mobilenetv2_model.h5",
+    "ResNet50": "resnet50_model.h5",
+}
 
-# Ensure runtime_files directory exists
-runtime_dir = "runtime_files"
-os.makedirs(runtime_dir, exist_ok=True)
+try:
+    os.makedirs(RUNTIME_DIR, exist_ok=True)
+except OSError:
+    RUNTIME_DIR = tempfile.mkdtemp(prefix="pathonix_runtime_")
+
+
+def is_git_lfs_pointer(path):
+    try:
+        with open(path, "rb") as file:
+            return file.read(64).startswith(b"version https://git-lfs.github.com")
+    except OSError:
+        return False
+
+
+def validate_model_files():
+    missing_or_invalid = []
+    for model_name, file_name in MODEL_FILES.items():
+        path = os.path.join(MODELS_DIR, file_name)
+        if not os.path.exists(path):
+            missing_or_invalid.append(f"{model_name}: missing `{path}`")
+        elif is_git_lfs_pointer(path):
+            missing_or_invalid.append(
+                f"{model_name}: `{path}` is a Git LFS pointer, not the real model file"
+            )
+        elif os.path.getsize(path) < 1_000_000:
+            missing_or_invalid.append(
+                f"{model_name}: `{path}` is too small to be a trained Keras model"
+            )
+    return missing_or_invalid
+
+
+@st.cache_resource
+def load_models():
+    problems = validate_model_files()
+    if problems:
+        problem_text = "\n".join(f"- {problem}" for problem in problems)
+        raise RuntimeError(
+            "The trained model files are not available locally.\n\n"
+            f"{problem_text}\n\n"
+            "Fix: install Git LFS and run `git lfs pull`, or copy the three real "
+            "`.h5` files into the `modelsv3/` folder."
+        )
+    return {
+        model_name: tf.keras.models.load_model(os.path.join(MODELS_DIR, file_name))
+        for model_name, file_name in MODEL_FILES.items()
+    }
 
 # Grad-CAM functions
 def get_img_array(img_path, size):
@@ -46,7 +86,11 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None
     last_conv_layer_output = last_conv_layer_output[0]
     heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]
     heatmap = tf.squeeze(heatmap)
-    heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
+    heatmap = tf.maximum(heatmap, 0)
+    max_value = tf.math.reduce_max(heatmap)
+    if float(max_value.numpy()) == 0.0:
+        return np.zeros(heatmap.shape, dtype=np.float32)
+    heatmap = heatmap / max_value
     return heatmap.numpy()
 
 def display_gradcam(img_path, heatmap, cam_path="cam.jpg", alpha=0.4):
@@ -88,6 +132,16 @@ st.write("""
     Simply upload an image to get started! 🚀
 """)
 
+try:
+    models = load_models()
+except RuntimeError as error:
+    st.error(str(error))
+    st.stop()
+
+efficientnetb0_model = models["EfficientNetB0"]
+mobilenetv2_model = models["MobileNetV2"]
+resnet50_model = models["ResNet50"]
+
 # Radio button for selecting input type
 input_type = st.radio(
     "Choose input type:",
@@ -99,16 +153,22 @@ img_path = None
 if input_type == "Upload an image":
     uploaded_file = st.file_uploader("Choose a histopathological image...", type=["jpg", "jpeg", "png"])
     if uploaded_file is not None:
-        img_path = os.path.join(runtime_dir, uploaded_file.name)
+        img_path = os.path.join(RUNTIME_DIR, os.path.basename(uploaded_file.name))
         with open(img_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         st.write("Image uploaded successfully! Please click the **Diagnose** button to proceed.")
 elif input_type == "Select a sample test image":
-    sample_images_dir = "sample_images"
-    sample_images = os.listdir(sample_images_dir)
-    selected_image = st.selectbox("Choose a sample test image", sample_images)
-    img_path = os.path.join(sample_images_dir, selected_image)
-    st.write("Sample image selected successfully! Please click the **Diagnose** button to proceed.")
+    sample_images = sorted(
+        file_name
+        for file_name in os.listdir(SAMPLE_IMAGES_DIR)
+        if file_name.lower().endswith((".jpg", ".jpeg", ".png"))
+    )
+    if sample_images:
+        selected_image = st.selectbox("Choose a sample test image", sample_images)
+        img_path = os.path.join(SAMPLE_IMAGES_DIR, selected_image)
+        st.write("Sample image selected successfully! Please click the **Diagnose** button to proceed.")
+    else:
+        st.warning("No sample images were found in the `sample_images/` folder.")
 
 # Add a submit button
 if img_path and st.button("Diagnose 🩺"):
@@ -126,7 +186,7 @@ if img_path and st.button("Diagnose 🩺"):
         efficientnetb0_heatmap = make_gradcam_heatmap(
             img_array, efficientnetb0_model, "top_conv"
         )
-        efficientnetb0_cam_path = os.path.join(runtime_dir, "efficientnetb0_cam.jpg")
+        efficientnetb0_cam_path = os.path.join(RUNTIME_DIR, "efficientnetb0_cam.jpg")
         display_gradcam(img_path, efficientnetb0_heatmap, cam_path=efficientnetb0_cam_path)
 
         progress_text.write("Step 3/5: Generating Grad-CAM for MobileNetV2...")
@@ -134,7 +194,7 @@ if img_path and st.button("Diagnose 🩺"):
         mobilenetv2_heatmap = make_gradcam_heatmap(
             img_array, mobilenetv2_model, "Conv_1"
         )
-        mobilenetv2_cam_path = os.path.join(runtime_dir, "mobilenetv2_cam.jpg")
+        mobilenetv2_cam_path = os.path.join(RUNTIME_DIR, "mobilenetv2_cam.jpg")
         display_gradcam(img_path, mobilenetv2_heatmap, cam_path=mobilenetv2_cam_path)
 
         progress_text.write("Step 4/5: Generating Grad-CAM for ResNet50...")
@@ -142,7 +202,7 @@ if img_path and st.button("Diagnose 🩺"):
         resnet50_heatmap = make_gradcam_heatmap(
             img_array, resnet50_model, "conv5_block3_out"
         )
-        resnet50_cam_path = os.path.join(runtime_dir, "resnet50_cam.jpg")
+        resnet50_cam_path = os.path.join(RUNTIME_DIR, "resnet50_cam.jpg")
         display_gradcam(img_path, resnet50_heatmap, cam_path=resnet50_cam_path)
 
         progress_text.write("Step 5/5: Performing ensemble prediction...")
@@ -176,14 +236,12 @@ if img_path and st.button("Diagnose 🩺"):
 
     st.write("### Ensemble Prediction 📊")
     # Assuming a threshold of 0.5 for binary classification
-    if ensemble_pred >= 0.5:
+    ensemble_score = float(np.squeeze(ensemble_pred))
+    st.write(f"Ensemble score: **{ensemble_score:.3f}**")
+    if ensemble_score >= 0.5:
         st.write("The model predicts: **Non-Cancer** 💊")
     else:
         st.write("The model predicts: **Cancer** 🧫")
-
-    # Clean up runtime_files directory
-    shutil.rmtree(runtime_dir)
-    os.makedirs(runtime_dir, exist_ok=True)
 
 # Sidebar with logo and about information
 st.sidebar.image("./Images/living-tissue.png", use_column_width=True)

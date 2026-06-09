@@ -15,13 +15,23 @@
 
 - Python 3.7+
 - pip (Python package installer)
+- Git LFS (required for the `.h5` model files)
 
 ### Clone the Repository
 
 ```bash
 git clone https://github.com/Psuedonerd/pathonix.git
 cd pathonix
+git lfs pull
 ```
+
+The files in `modelsv3/` should be large binary HDF5 files after cloning:
+
+- `efficientnetb0_model.h5` is about 62 MB
+- `mobilenetv2_model.h5` is about 41 MB
+- `resnet50_model.h5` is about 294 MB
+
+If any of these files are only about 130 bytes, Git LFS did not fetch the real model files. In that case, install Git LFS and run `git lfs pull`, or copy the real trained `.h5` files into `modelsv3/`.
 
 ### Install Dependencies
 
